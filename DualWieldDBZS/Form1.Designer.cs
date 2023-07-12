@@ -40,30 +40,42 @@
             // 
             // ToggleOnButton
             // 
-            ToggleOnButton.Location = new Point(12, 136);
+            ToggleOnButton.BackColor = Color.FromArgb(153, 153, 153);
+            ToggleOnButton.BackgroundImage = (Image)resources.GetObject("ToggleOnButton.BackgroundImage");
+            ToggleOnButton.FlatAppearance.BorderColor = Color.Black;
+            ToggleOnButton.FlatAppearance.MouseOverBackColor = Color.White;
+            ToggleOnButton.FlatStyle = FlatStyle.Popup;
+            ToggleOnButton.Location = new Point(13, 158);
+            ToggleOnButton.Margin = new Padding(4, 3, 4, 3);
             ToggleOnButton.Name = "ToggleOnButton";
-            ToggleOnButton.Size = new Size(160, 23);
+            ToggleOnButton.Size = new Size(211, 28);
             ToggleOnButton.TabIndex = 0;
             ToggleOnButton.Text = "Start (Ctrl+Tab)";
-            ToggleOnButton.UseVisualStyleBackColor = true;
+            ToggleOnButton.UseVisualStyleBackColor = false;
             ToggleOnButton.Click += ToggleOnButton_Click;
             // 
             // numericUpDown1
             // 
-            numericUpDown1.Location = new Point(80, 66);
+            numericUpDown1.BackColor = SystemColors.InfoText;
+            numericUpDown1.ForeColor = SystemColors.ControlLight;
+            numericUpDown1.Location = new Point(126, 46);
+            numericUpDown1.Margin = new Padding(4, 3, 4, 3);
             numericUpDown1.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             numericUpDown1.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown1.Name = "numericUpDown1";
-            numericUpDown1.Size = new Size(92, 23);
+            numericUpDown1.Size = new Size(98, 19);
             numericUpDown1.TabIndex = 1;
             numericUpDown1.Value = new decimal(new int[] { 170, 0, 0, 0 });
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(1, 68);
+            label1.BackColor = Color.Transparent;
+            label1.ForeColor = SystemColors.ControlLight;
+            label1.Location = new Point(13, 48);
+            label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new Size(73, 15);
+            label1.Size = new Size(105, 13);
             label1.TabIndex = 2;
             label1.Text = "Interval (ms)";
             // 
@@ -74,22 +86,28 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(66, 118);
+            label2.BackColor = Color.Transparent;
+            label2.ForeColor = SystemColors.ControlLight;
+            label2.Location = new Point(86, 128);
+            label2.Margin = new Padding(4, 0, 4, 0);
             label2.Name = "label2";
-            label2.Size = new Size(51, 15);
+            label2.Size = new Size(66, 13);
             label2.TabIndex = 3;
             label2.Text = "Bean: F8";
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(9F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(184, 171);
+            BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            ClientSize = new Size(237, 198);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(numericUpDown1);
             Controls.Add(ToggleOnButton);
+            Font = new Font("Minecraft", 9F, FontStyle.Regular, GraphicsUnit.Point);
             Icon = (Icon)resources.GetObject("$this.Icon");
+            Margin = new Padding(4, 3, 4, 3);
             Name = "Form1";
             Text = "Dual Wield";
             FormClosed += Form1_FormClosed;
