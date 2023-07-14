@@ -47,7 +47,7 @@ namespace DualWieldDBZS
         int toggleId;
         int beanId;
 
-        private static List<Keys> keyList = new List<Keys>();
+        private static Dictionary<Keys, bool> keyDict = new Dictionary<Keys, bool>();
         private string keysString;
         static bool isMenuOpen;
 
@@ -90,7 +90,7 @@ namespace DualWieldDBZS
             {
                 Keys key;
                 Enum.TryParse(keysStringArray[i], out key);
-                keyList.Add(key);
+                keyDict.Add(key, false);
             }
         }
 
@@ -134,9 +134,14 @@ namespace DualWieldDBZS
                 Keys k = (Keys)Marshal.ReadInt32(lParam);
                 //Debug.WriteLine(k.ToString());
 
-                for (int i = 0; i < keyList.Count; i++)
+                if (keyDict.ContainsKey(k))
+                    keyDict[k] = true;
+                else
                 {
-                    if (k == keyList[i]) isMenuOpen = true;
+                    for (int i = 0; i < keyDict.Count; i++) 
+                    {
+                        keyDict[keyDict.ElementAt(i).Key] = false;
+                    }
                 }
             }
 
@@ -150,12 +155,12 @@ namespace DualWieldDBZS
                 // If the list has been updated, clear and re-parse
                 keysString = Properties.Settings.Default.CancelKeysString;
                 string[] keysStringArray = keysString.Split(", ");
-                keyList.Clear();
+                keyDict.Clear();
                 for (int i = 0; i < keysStringArray.Length; i++)
                 {
                     Keys key;
                     Enum.TryParse(keysStringArray[i], out key);
-                    keyList.Add(key);
+                    keyDict.Add(key, false);
                 }
             }
 
@@ -197,11 +202,13 @@ namespace DualWieldDBZS
 
         private void ClickTimer_Tick(object sender, EventArgs e)
         {
-            if (!stop && isMenuOpen)
+            foreach (var keyValuePair in keyDict)
             {
-                toggleTheThing();
-                isMenuOpen = false;
-                return;
+                if (keyValuePair.Value)
+                {
+                    toggleTheThing();
+                    return;
+                }
             }
 
             SendKeys.SendWait(send1 ? "1" : "2");
