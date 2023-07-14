@@ -1,20 +1,8 @@
 /* I am intensely sorry for my lack of comments */
 
 using System.Diagnostics;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.IO;
-using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
 
 namespace DualWieldDBZS
 {
@@ -44,6 +32,9 @@ namespace DualWieldDBZS
         [DllImport("Kernel32.dll")]
         public static extern IntPtr LoadLibrary(string lpFileName);
 
+        // Settings menu
+        SettingsForm settingsForm = new SettingsForm();
+
         // Defines
         const int WH_KEYBOARD_LL = 13;
         const int WM_KEYDOWN = 0x100;
@@ -56,10 +47,9 @@ namespace DualWieldDBZS
         int toggleId;
         int beanId;
 
-        static bool isInventoryOpen;
-        static bool isPauseOpen;
-        static bool isDbcOpen;
-        static bool isActionMenuOpen;
+        private static List<Keys> keyList = new List<Keys>();
+        private string keysString;
+        static bool isMenuOpen;
 
         public Form1()
         {
@@ -91,6 +81,16 @@ namespace DualWieldDBZS
             {
                 Debug.WriteLine("BeanKey failed");
                 Debug.WriteLine(GetLastError());
+            }
+
+            // Get which keys cancel the script
+            keysString = Properties.Settings.Default.CancelKeysString;
+            string[] keysStringArray = keysString.Split(", ");
+            for (int i = 0; i < keysStringArray.Length; i++)
+            {
+                Keys key;
+                Enum.TryParse(keysStringArray[i], out key);
+                keyList.Add(key);
             }
         }
 
@@ -126,18 +126,18 @@ namespace DualWieldDBZS
         {
             UnhookWindowsHookEx(hhook);
         }
-        
+
         public static IntPtr hookProc(int code, IntPtr wParam, IntPtr lParam)
         {
             if (code >= 0 && wParam == (IntPtr)WM_KEYDOWN)
             {
                 Keys k = (Keys)Marshal.ReadInt32(lParam);
-                Debug.WriteLine(k.ToString());
+                //Debug.WriteLine(k.ToString());
 
-                isInventoryOpen = k == Keys.E;
-                isPauseOpen = k == Keys.Escape;
-                isDbcOpen = k == Keys.V || k == Keys.L || k == Keys.K;
-                isActionMenuOpen = k == Keys.X;
+                for (int i = 0; i < keyList.Count; i++)
+                {
+                    if (k == keyList[i]) isMenuOpen = true;
+                }
             }
 
             return CallNextHookEx(hhook, code, (int)wParam, lParam);
@@ -145,6 +145,20 @@ namespace DualWieldDBZS
 
         private void toggleTheThing()
         {
+            if (keysString != Properties.Settings.Default.CancelKeysString)
+            {
+                // If the list has been updated, clear and re-parse
+                keysString = Properties.Settings.Default.CancelKeysString;
+                string[] keysStringArray = keysString.Split(", ");
+                keyList.Clear();
+                for (int i = 0; i < keysStringArray.Length; i++)
+                {
+                    Keys key;
+                    Enum.TryParse(keysStringArray[i], out key);
+                    keyList.Add(key);
+                }
+            }
+
             stop = !stop;
 
             ClickTimer.Interval = (int)numericUpDown1.Value;
@@ -183,9 +197,10 @@ namespace DualWieldDBZS
 
         private void ClickTimer_Tick(object sender, EventArgs e)
         {
-            if (!stop && (isInventoryOpen || isPauseOpen ||isDbcOpen || isActionMenuOpen))
+            if (!stop && isMenuOpen)
             {
                 toggleTheThing();
+                isMenuOpen = false;
                 return;
             }
 
@@ -216,5 +231,11 @@ namespace DualWieldDBZS
             base.WndProc(ref m);
         }
 
+        private void settingsbutton_Click(object sender, EventArgs e)
+        {
+            settingsForm.StartPosition = FormStartPosition.Manual;
+            settingsForm.Location = new Point(this.Location.X + 50, this.Location.Y -20);
+            settingsForm.ShowDialog(this);
+        }
     }
 }

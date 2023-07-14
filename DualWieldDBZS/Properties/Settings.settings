@@ -1,0 +1,9 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DualWieldDBZS.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="CancelKeysString" Type="System.String" Scope="User">
+      <Value Profile="(Default)">E, Escape, V, L, K, X</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

@@ -35,6 +35,8 @@
             label1 = new Label();
             ClickTimer = new System.Windows.Forms.Timer(components);
             label2 = new Label();
+            settingsbutton = new Button();
+            imageList1 = new ImageList(components);
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             SuspendLayout();
             // 
@@ -45,10 +47,11 @@
             ToggleOnButton.FlatAppearance.BorderColor = Color.Black;
             ToggleOnButton.FlatAppearance.MouseOverBackColor = Color.White;
             ToggleOnButton.FlatStyle = FlatStyle.Popup;
+            ToggleOnButton.ForeColor = SystemColors.ControlLightLight;
             ToggleOnButton.Location = new Point(13, 158);
             ToggleOnButton.Margin = new Padding(4, 3, 4, 3);
             ToggleOnButton.Name = "ToggleOnButton";
-            ToggleOnButton.Size = new Size(211, 28);
+            ToggleOnButton.Size = new Size(170, 28);
             ToggleOnButton.TabIndex = 0;
             ToggleOnButton.Text = "Start (Ctrl+Tab)";
             ToggleOnButton.UseVisualStyleBackColor = false;
@@ -95,12 +98,35 @@
             label2.TabIndex = 3;
             label2.Text = "Bean: F8";
             // 
+            // settingsbutton
+            // 
+            settingsbutton.BackColor = Color.FromArgb(153, 153, 153);
+            settingsbutton.BackgroundImage = (Image)resources.GetObject("settingsbutton.BackgroundImage");
+            settingsbutton.FlatAppearance.BorderColor = Color.Black;
+            settingsbutton.FlatStyle = FlatStyle.Popup;
+            settingsbutton.ImageKey = "settings_icon.png";
+            settingsbutton.ImageList = imageList1;
+            settingsbutton.Location = new Point(190, 158);
+            settingsbutton.Name = "settingsbutton";
+            settingsbutton.Size = new Size(35, 28);
+            settingsbutton.TabIndex = 4;
+            settingsbutton.UseVisualStyleBackColor = false;
+            settingsbutton.Click += settingsbutton_Click;
+            // 
+            // imageList1
+            // 
+            imageList1.ColorDepth = ColorDepth.Depth8Bit;
+            imageList1.ImageStream = (ImageListStreamer)resources.GetObject("imageList1.ImageStream");
+            imageList1.TransparentColor = Color.Transparent;
+            imageList1.Images.SetKeyName(0, "settings_icon.png");
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(9F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(237, 198);
+            Controls.Add(settingsbutton);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(numericUpDown1);
@@ -124,5 +150,7 @@
         private Label label1;
         private System.Windows.Forms.Timer ClickTimer;
         private Label label2;
+        private Button settingsbutton;
+        private ImageList imageList1;
     }
 }
