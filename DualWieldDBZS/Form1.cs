@@ -167,15 +167,15 @@ namespace DualWieldDBZS
             {
                 toggleTheThing();
 
-                Thread.Sleep(ClickTimer.Interval / 3);
+                Thread.Sleep(30);
 
                 SendKeys.SendWait("9");
 
-                Thread.Sleep(ClickTimer.Interval / 3);
+                Thread.Sleep(30);
 
                 cc.rightClick(new Point(MousePosition.X, MousePosition.Y));
 
-                Thread.Sleep(ClickTimer.Interval / 3);
+                Thread.Sleep(30);
 
                 toggleTheThing();
             }
