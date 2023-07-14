@@ -85,6 +85,7 @@
             Margin = new Padding(4, 3, 4, 3);
             Name = "SettingsForm";
             Text = "Settings";
+            Load += SettingsForm_Load;
             ResumeLayout(false);
             PerformLayout();
         }

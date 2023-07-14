@@ -24,5 +24,10 @@ namespace DualWieldDBZS
 
             this.Close();
         }
+
+        private void SettingsForm_Load(object sender, EventArgs e)
+        {
+            CancelKeysInput.Text = Properties.Settings.Default.CancelKeysString;
+        }
     }
 }
