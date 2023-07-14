@@ -138,7 +138,7 @@ namespace DualWieldDBZS
                     keyDict[k] = true;
                 else
                 {
-                    for (int i = 0; i < keyDict.Count; i++) 
+                    for (int i = 0; i < keyDict.Count; i++)
                     {
                         keyDict[keyDict.ElementAt(i).Key] = false;
                     }
@@ -241,7 +241,7 @@ namespace DualWieldDBZS
         private void settingsbutton_Click(object sender, EventArgs e)
         {
             settingsForm.StartPosition = FormStartPosition.Manual;
-            settingsForm.Location = new Point(this.Location.X + 50, this.Location.Y -20);
+            settingsForm.Location = new Point(this.Location.X + 50, this.Location.Y - 20);
             settingsForm.ShowDialog(this);
         }
     }

@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             CancelKeysInput = new TextBox();
             SaveSettingsButton = new Button();
             label1 = new Label();
@@ -47,7 +46,7 @@
             // SaveSettingsButton
             // 
             SaveSettingsButton.BackColor = Color.FromArgb(153, 153, 153);
-            SaveSettingsButton.BackgroundImage = (Image)resources.GetObject("SaveSettingsButton.BackgroundImage");
+            SaveSettingsButton.BackgroundImage = Properties.Resources.bgbtn;
             SaveSettingsButton.FlatAppearance.BorderColor = Color.Black;
             SaveSettingsButton.FlatAppearance.MouseOverBackColor = Color.White;
             SaveSettingsButton.FlatStyle = FlatStyle.Popup;
@@ -76,7 +75,7 @@
             // 
             AutoScaleDimensions = new SizeF(9F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            BackgroundImage = Properties.Resources.background;
             ClientSize = new Size(218, 160);
             Controls.Add(label1);
             Controls.Add(SaveSettingsButton);

@@ -43,7 +43,7 @@
             // ToggleOnButton
             // 
             ToggleOnButton.BackColor = Color.FromArgb(153, 153, 153);
-            ToggleOnButton.BackgroundImage = (Image)resources.GetObject("ToggleOnButton.BackgroundImage");
+            ToggleOnButton.BackgroundImage = Properties.Resources.bgbtn;
             ToggleOnButton.FlatAppearance.BorderColor = Color.Black;
             ToggleOnButton.FlatAppearance.MouseOverBackColor = Color.White;
             ToggleOnButton.FlatStyle = FlatStyle.Popup;
@@ -101,7 +101,7 @@
             // settingsbutton
             // 
             settingsbutton.BackColor = Color.FromArgb(153, 153, 153);
-            settingsbutton.BackgroundImage = (Image)resources.GetObject("settingsbutton.BackgroundImage");
+            settingsbutton.BackgroundImage = Properties.Resources.bgbtn;
             settingsbutton.FlatAppearance.BorderColor = Color.Black;
             settingsbutton.FlatStyle = FlatStyle.Popup;
             settingsbutton.ImageKey = "settings_icon.png";
@@ -124,7 +124,7 @@
             // 
             AutoScaleDimensions = new SizeF(9F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            BackgroundImage = Properties.Resources.background;
             ClientSize = new Size(237, 198);
             Controls.Add(settingsbutton);
             Controls.Add(label2);

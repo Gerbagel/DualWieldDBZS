@@ -15,7 +15,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Assets\favicon.ico" />
+    <None Remove="Assets\background.png" />
+    <None Remove="Assets\bgbtn.png" />
+    <None Remove="Assets\settings_icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\favicon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\background.png" />
+    <EmbeddedResource Include="Assets\bgbtn.png" />
+    <EmbeddedResource Include="Assets\settings_icon.png" />
   </ItemGroup>
 
   <ItemGroup>
