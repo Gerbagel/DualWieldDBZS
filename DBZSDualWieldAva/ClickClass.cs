@@ -12,6 +12,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Text.Json;
 using System.Reactive.Subjects;
+using System.Xml;
+using Avalonia.Rendering;
 
 namespace DBZSDualWieldAva
 {
@@ -241,6 +243,7 @@ namespace DBZSDualWieldAva
                 return;
 
             CancellationToken token = (CancellationToken)obj;
+            bool wasToggled = false;
 
             while (true)
             {
@@ -259,8 +262,15 @@ namespace DBZSDualWieldAva
                     if (keyValuePair.Value)
                     {
                         toggleTheThing();
-                        continue;
+                        wasToggled = true;
                     }
+                }
+
+                // God this is a mess
+                if (wasToggled)
+                {
+                    wasToggled = false;
+                    continue;
                 }
 
                 SendKeys.SendWait(send1 ? "1" : "2");
