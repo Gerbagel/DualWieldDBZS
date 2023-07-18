@@ -128,6 +128,7 @@ namespace DBZSDualWieldAva
 
         ~ClickClass()
         {
+            cts.Cancel();
             UserSettings.Instance.SaveSettings();
 
             // Unregiser hotkeys
@@ -258,7 +259,7 @@ namespace DBZSDualWieldAva
                     if (keyValuePair.Value)
                     {
                         toggleTheThing();
-                        return;
+                        continue;
                     }
                 }
 
