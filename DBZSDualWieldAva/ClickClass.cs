@@ -1,13 +1,24 @@
-/* I am intensely sorry for my lack of comments */
-
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Avalonia.Win32;
 using System.Windows.Forms;
+using System.IO;
+using System.Text.Json;
+using System.Reactive.Subjects;
 
-namespace DualWieldDBZS
+namespace DBZSDualWieldAva
 {
-    public partial class Form1 : Form
+    public sealed class ClickClass : Form
     {
+        private static ClickClass instance = null;
+        private static readonly object padlock = new object();
         /* DLL Imports */
         // Hotkey registration functions for Ctrl+Tab
         [DllImport("user32.dll")]
@@ -23,6 +34,18 @@ namespace DualWieldDBZS
         [DllImport("user32.dll")]
         public static extern int CallNextHookEx(IntPtr idHook, int nCode, int wParam, IntPtr lParam);
 
+        // Windows mouse_events
+        [DllImport("user32.dll")]
+        static extern void mouse_event(int dwFlags, int dx, int dy, int dwData, int dwextrainfo);
+        // Enum so I don't have to remember the codes
+        public enum mouseeventflags
+        {
+            LeftDown = 0x02,
+            LeftUp = 0x04,
+            RightDown = 0x08,
+            RightUp = 0x10,
+        }
+
         public delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
         // Error stuff, useful for debugging
@@ -32,9 +55,6 @@ namespace DualWieldDBZS
         [DllImport("Kernel32.dll")]
         public static extern IntPtr LoadLibrary(string lpFileName);
 
-        // Settings menu
-        SettingsForm settingsForm = new SettingsForm();
-
         // Defines
         const int WH_KEYBOARD_LL = 13;
         const int WM_KEYDOWN = 0x100;
@@ -43,37 +63,47 @@ namespace DualWieldDBZS
 
         private LowLevelKeyboardProc _proc = hookProc;
 
-        ClickClass cc;
         int toggleId;
         int beanId;
 
         private static Dictionary<Keys, bool> keyDict = new Dictionary<Keys, bool>();
         private string keysString;
-        static bool isMenuOpen;
 
-        public Form1()
+        CancellationTokenSource cts;
+
+        public Subject<string> ButtonSrc = new Subject<string>();
+        public bool stop = true;
+        bool send1 = true;
+
+        private ClickClass()
         {
-            InitializeComponent();
+            keysString = UserSettings.Instance.CancelKeys;
 
-            // Register hotkeys
-            cc = new ClickClass();
+            cts = new CancellationTokenSource();
+            ThreadPool.QueueUserWorkItem(new WaitCallback(ClickTimerThread), cts.Token);
+
+            // Register hotkeys 
             toggleId = 1;
-            bool toggleKeyRegistered = RegisterHotKey(
-                this.Handle, toggleId, 0x0002, Keys.Tab.GetHashCode());
+            bool toggleHotkeyRegistered = RegisterHotKey(
+                Handle, toggleId, 0x0002, Keys.Tab.GetHashCode());
 
-            if (toggleKeyRegistered)
+#if DEBUG
+            if (toggleHotkeyRegistered)
             {
-                Debug.WriteLine("ToggleKey success!");
-            } else
+                Debug.WriteLine("ToggleKey Success!");
+            }
+            else
             {
                 Debug.WriteLine("ToggleKey failed");
                 Debug.WriteLine(GetLastError());
             }
+#endif
 
             beanId = 2;
             bool beanKeyRegistered = RegisterHotKey(
-                this.Handle, beanId, 0x0000, Keys.F8.GetHashCode());
+                Handle, beanId, 0x0000, Keys.F8.GetHashCode());
 
+#if DEBUG
             if (beanKeyRegistered)
             {
                 Debug.WriteLine("BeanKey success!");
@@ -82,9 +112,9 @@ namespace DualWieldDBZS
                 Debug.WriteLine("BeanKey failed");
                 Debug.WriteLine(GetLastError());
             }
+#endif
 
             // Get which keys cancel the script
-            keysString = Properties.Settings.Default.CancelKeysString;
             string[] keysStringArray = keysString.Split(", ");
             for (int i = 0; i < keysStringArray.Length; i++)
             {
@@ -92,28 +122,45 @@ namespace DualWieldDBZS
                 Enum.TryParse(keysStringArray[i], out key);
                 keyDict.Add(key, false);
             }
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            Debug.WriteLine(Keys.Control.GetHashCode());
 
             SetHook();
         }
 
-        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        ~ClickClass()
         {
-            UnregisterHotKey(this.Handle, toggleId);
-            UnregisterHotKey(this.Handle, beanId);
+            UserSettings.Instance.SaveSettings();
+
+            // Unregiser hotkeys
+            UnregisterHotKey(Handle, toggleId);
+            UnregisterHotKey(Handle, beanId);
 
             UnHook();
         }
 
-        bool stop = true;
-        bool send1 = true;
-        private void ToggleOnButton_Click(object sender, EventArgs e)
+        public static ClickClass Instance
         {
-            toggleTheThing();
+            get
+            {
+                lock (padlock)
+                {
+                    if (instance == null)
+                    {
+                        instance = new ClickClass();
+                    }
+                    return instance;
+                }
+            }
+        }
+
+        // Functions to both left and right click
+        public void leftClick(Point point)
+        {
+            mouse_event((int)(mouseeventflags.LeftDown | mouseeventflags.LeftUp), point.X, point.Y, 0, 0);
+        }
+
+        public void rightClick(Point point)
+        {
+            mouse_event((int)(mouseeventflags.RightDown | mouseeventflags.RightUp), point.X, point.Y, 0, 0);
         }
 
         public void SetHook()
@@ -132,7 +179,6 @@ namespace DualWieldDBZS
             if (code >= 0 && wParam == (IntPtr)WM_KEYDOWN)
             {
                 Keys k = (Keys)Marshal.ReadInt32(lParam);
-                //Debug.WriteLine(k.ToString());
 
                 if (keyDict.ContainsKey(k))
                     keyDict[k] = true;
@@ -148,36 +194,24 @@ namespace DualWieldDBZS
             return CallNextHookEx(hhook, code, (int)wParam, lParam);
         }
 
-        private void toggleTheThing()
+        public void toggleTheThing()
         {
-            if (keysString != Properties.Settings.Default.CancelKeysString)
+            if (keysString != UserSettings.Instance.CancelKeys)
             {
                 // If the list has been updated, clear and re-parse
-                keysString = Properties.Settings.Default.CancelKeysString;
+                keysString = UserSettings.Instance.CancelKeys;
                 string[] keysStringArray = keysString.Split(", ");
                 keyDict.Clear();
                 for (int i = 0; i < keysStringArray.Length; i++)
                 {
-                    Keys key;
-                    Enum.TryParse(keysStringArray[i], out key);
-                    keyDict.Add(key, false);
+                    Keys Keys;
+                    Enum.TryParse(keysStringArray[i], out Keys);
+                    keyDict.Add(Keys, false);
                 }
             }
 
             stop = !stop;
-
-            ClickTimer.Interval = (int)numericUpDown1.Value;
-            ClickTimer.Enabled = true;
-
-            ToggleOnButton.Text = stop ? "Start (Ctrl+Tab)" : "Stop (Ctrl+Tab)";
-
-            if (!stop)
-            {
-                ClickTimer.Start();
-            } else
-            {
-                ClickTimer.Stop();
-            }
+            ButtonSrc.OnNext(stop ? "Start (Ctrl+Tab)" : "Stop (Ctrl+Tab)");
         }
 
         private void bean()
@@ -192,7 +226,7 @@ namespace DualWieldDBZS
 
                 Thread.Sleep(30);
 
-                cc.rightClick(new Point(MousePosition.X, MousePosition.Y));
+                rightClick(Cursor.Position);
 
                 Thread.Sleep(30);
 
@@ -200,21 +234,39 @@ namespace DualWieldDBZS
             }
         }
 
-        private void ClickTimer_Tick(object sender, EventArgs e)
+        private void ClickTimerThread(object? obj)
         {
-            foreach (var keyValuePair in keyDict)
+            if (obj is null)
+                return;
+
+            CancellationToken token = (CancellationToken)obj;
+
+            while (true)
             {
-                if (keyValuePair.Value)
+                if (token.IsCancellationRequested)
+                    break;
+
+                if (stop)
                 {
-                    toggleTheThing();
-                    return;
+                    // Sleep set time here, to avoid lag
+                    Thread.Sleep(500); // Extra sleepytime :)
+                    continue;
                 }
+
+                foreach (var keyValuePair in keyDict)
+                {
+                    if (keyValuePair.Value)
+                    {
+                        toggleTheThing();
+                        return;
+                    }
+                }
+
+                SendKeys.SendWait(send1 ? "1" : "2");
+                leftClick(Cursor.Position);
+                send1 = !send1;
+                Thread.Sleep(UserSettings.Instance.Interval);
             }
-
-            SendKeys.SendWait(send1 ? "1" : "2");
-            cc.leftClick(new Point(MousePosition.X, MousePosition.Y));
-
-            send1 = !send1;
         }
 
         protected override void WndProc(ref Message m)
@@ -225,24 +277,21 @@ namespace DualWieldDBZS
 
                 if (id == 1)
                 {
+#if DEBUG
                     Debug.WriteLine("Toggled");
+#endif
                     toggleTheThing();
                 }
                 if (id == 2)
                 {
+#if DEBUG
                     Debug.WriteLine("Beaned");
+#endif
                     bean();
                 }
             }
 
             base.WndProc(ref m);
-        }
-
-        private void settingsbutton_Click(object sender, EventArgs e)
-        {
-            settingsForm.StartPosition = FormStartPosition.Manual;
-            settingsForm.Location = new Point(this.Location.X + 50, this.Location.Y - 20);
-            settingsForm.ShowDialog(this);
         }
     }
 }

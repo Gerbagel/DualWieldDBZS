@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:DBZSDualWieldAva.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="220" d:DesignHeight="180"
+             x:Class="DBZSDualWieldAva.Views.SettingsView"
+			 x:DataType="vm:SettingsViewModel">
+	<Design.DataContext>
+		<vm:SettingsViewModel/>
+	</Design.DataContext>
+	<DockPanel>
+		<Grid DockPanel.Dock="Top">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="30"/>
+				<RowDefinition Height="30"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<TextBlock Text="Cancel keys:" Foreground="White" Grid.Row="0" Grid.Column="0" Margin="10, 10, 0, 0" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="11"/>
+			<TextBox Name="CancelKeys" Text="{Binding CancelKeysString}" FontSize="10" Height="30" Margin="10, 0, 10, 0" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" Background="Black"/>
+		</Grid>
+		<Border BorderBrush="Black" BorderThickness="1" BoxShadow="inset 2 2 0 #78ffffff" DockPanel.Dock="Bottom" Margin="10, 0, 10, 10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="32">
+			<Border.Background>
+				<ImageBrush Source="/Assets/bgbtn.png" Stretch="UniformToFill"/>
+			</Border.Background>
+			<Border BorderBrush="Transparent" BoxShadow="inset -2 -4 0 #66000000">
+				<Button Name="ExitSettingsButton" Background="Transparent" Content="Save and exit" HorizontalAlignment="Stretch" Height="30" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding SaveAndExitCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" PointerEntered="PointerEnter" PointerExited="PointerExit"/>
+			</Border>
+		</Border>
+	</DockPanel>
+</UserControl>

@@ -1,0 +1,54 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:DBZSDualWieldAva.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="210"
+             x:Class="DBZSDualWieldAva.Views.MainView"
+             x:DataType="vm:MainViewModel">
+  <Design.DataContext>
+    <!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+    <vm:MainViewModel />
+  </Design.DataContext>
+	<DockPanel Width="250" Height="210">
+		<Grid DockPanel.Dock="Top">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="125"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<TextBlock Text="Interval (ms):" Foreground="White" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="11"/>
+			<NumericUpDown Name="ClickIntervalInput" Value="{Binding IntervalInMs}" Height="30" Margin="0, 0, 10, 0" Grid.Row="0" Grid.Column="1" Background="Black" VerticalContentAlignment="Center" FontSize="11" Increment="1" Minimum="1" Maximum="1000"/>
+		</Grid>
+		<Grid DockPanel.Dock="Bottom">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="125"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="8*"/>
+				<ColumnDefinition Width="2*"/>
+			</Grid.ColumnDefinitions>
+			<Border BorderBrush="Black" BorderThickness="1" BoxShadow="inset 2 2 0 #78ffffff" Grid.Row="0" Grid.Column="0" Margin="10, 0, 5, 0" HorizontalAlignment="Stretch" Height="32">
+				<Border.Background>
+					<ImageBrush Source="/Assets/bgbtn.png" Stretch="UniformToFill"/>
+				</Border.Background>
+				<Border BorderBrush="Transparent" BoxShadow="inset -2 -4 0 #66000000">
+					<Button Name="StartStopButton" Background="Transparent" Content="Start (Ctrl+Tab)" HorizontalAlignment="Stretch" Height="30" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Click="StartButton_Click" PointerEntered="PointerEnter" PointerExited="PointerExit"/>
+				</Border>
+			</Border>
+			<Border BorderBrush="Black" BorderThickness="1" BoxShadow="inset 2 2 0 #78ffffff" Grid.Row="0"  Grid.Column="1" Margin="5, 0, 10, 0" HorizontalAlignment="Stretch" Height="32">
+				<Border.Background>
+					<ImageBrush Source="/Assets/bgbtn.png" Stretch="UniformToFill"/>
+				</Border.Background>
+				<Border BorderBrush="Transparent" BoxShadow="inset -2 -4 0 #66000000">
+					<Button Name="SettingsButton" Background="Transparent" Height="30" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="SettingsButton_Click" PointerEntered="PointerEnter" PointerExited="PointerExit">
+						<Image Source="/Assets/settings_icon.png" Stretch="UniformToFill"/>
+					</Button>
+				</Border>
+			</Border>
+		</Grid>
+	</DockPanel>
+</UserControl>

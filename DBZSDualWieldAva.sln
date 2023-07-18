@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBZSDualWieldAva", "DBZSDualWieldAva\DBZSDualWieldAva.csproj", "{9B0665CF-EF30-4BE1-AF29-6DE82E2DA8D2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBZSDualWieldAva.Desktop", "DBZSDualWieldAva.Desktop\DBZSDualWieldAva.Desktop.csproj", "{E1824CB6-6727-4ADE-91DC-FAC90CDF7F46}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B0665CF-EF30-4BE1-AF29-6DE82E2DA8D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B0665CF-EF30-4BE1-AF29-6DE82E2DA8D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B0665CF-EF30-4BE1-AF29-6DE82E2DA8D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B0665CF-EF30-4BE1-AF29-6DE82E2DA8D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1824CB6-6727-4ADE-91DC-FAC90CDF7F46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1824CB6-6727-4ADE-91DC-FAC90CDF7F46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1824CB6-6727-4ADE-91DC-FAC90CDF7F46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1824CB6-6727-4ADE-91DC-FAC90CDF7F46}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B3ABA741-4456-4D7C-9FAD-728A38B7AE98}
+	EndGlobalSection
+EndGlobal
