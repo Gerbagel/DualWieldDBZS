@@ -1,27 +1,17 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Media;
-using Avalonia.Platform;
-using DBZSDualWieldAva.ViewModels;
-using ReactiveUI;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Avalonia.Win32;
-using Avalonia.Controls.Embedding;
-using System.Windows.Forms.VisualStyles;
 using System;
+using System.Windows.Media;
 
 namespace DBZSDualWieldAva.Views;
 
 public partial class MainView : UserControl
 {
-    IBrush hoverColor = new SolidColorBrush(new Color(255, 100, 100, 255), 0.45);
+    IBrush hoverColor = new Avalonia.Media.SolidColorBrush(new Avalonia.Media.Color(255, 100, 100, 255), 0.45);
     public MainView()
     {
         InitializeComponent();
@@ -32,11 +22,13 @@ public partial class MainView : UserControl
 
     public void StartButton_Click(object sender, RoutedEventArgs e)
     {
+        playClickSound();
         ClickClass.Instance.toggleTheThing();
     }
 
     public void SettingsButton_Click(object sender, RoutedEventArgs e)
     {
+        playClickSound();
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             ShowSettingsDialog(desktop.MainWindow!);
@@ -52,7 +44,7 @@ public partial class MainView : UserControl
     public void PointerExit(object sender, PointerEventArgs e)
     {
         Button? button = sender as Button;
-        button!.Background = Brushes.Transparent;
+        button!.Background = Avalonia.Media.Brushes.Transparent;
     }
 
     public void ShowSettingsDialog(Window owner)
@@ -62,5 +54,15 @@ public partial class MainView : UserControl
         window.Position = new PixelPoint(owner.Position.X + 50, owner.Position.Y - 20);
 
         window.ShowDialog(owner);
+    }
+
+    void playClickSound()
+    {
+        if (UserSettings.Instance.IsMuted)
+            return;
+        var player = new MediaPlayer();
+        player.Open(new Uri(AppDomain.CurrentDomain.BaseDirectory + @"Assets\click.wav"));
+        player.Volume = 0.3f;
+        player.Play();
     }
 }

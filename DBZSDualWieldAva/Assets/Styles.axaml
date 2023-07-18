@@ -149,10 +149,55 @@
 		<Setter Property="Foreground" Value="White"/>
 		<Setter Property="BorderBrush" Value="White"/>
 		<Setter Property="CornerRadius" Value="0"/>
-		<Setter Property="FocusAdorner">
-			<FocusAdornerTemplate>
-				
-			</FocusAdornerTemplate>
+	</Style>
+	<Style Selector="CheckBox">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid ColumnDefinitions="Auto,*">
+					<Border Name="border"
+							Width="18"
+							Height="18"
+							VerticalAlignment="Center"
+							Background="{TemplateBinding Background}"
+							BorderBrush="{TemplateBinding BorderBrush}"
+							BorderThickness="{TemplateBinding BorderThickness}"
+							CornerRadius="{TemplateBinding CornerRadius}">
+						<Panel>
+							<Path Name="checkMark"
+								  Width="11"
+								  Height="10"
+								  HorizontalAlignment="Center"
+								  VerticalAlignment="Center"
+								  Data="M 1145.607177734375,430 C1145.607177734375,430 1141.449951171875,435.0772705078125 1141.449951171875,435.0772705078125 1141.449951171875,435.0772705078125 1139.232177734375,433.0999755859375 1139.232177734375,433.0999755859375 1139.232177734375,433.0999755859375 1138,434.5538330078125 1138,434.5538330078125 1138,434.5538330078125 1141.482177734375,438 1141.482177734375,438 1141.482177734375,438 1141.96875,437.9375 1141.96875,437.9375 1141.96875,437.9375 1147,431.34619140625 1147,431.34619140625 1147,431.34619140625 1145.607177734375,430 1145.607177734375,430 z"
+								  Fill="{DynamicResource HighlightBrush}"
+								  FlowDirection="LeftToRight"
+								  Stretch="Uniform" />
+							<Rectangle Name="indeterminateMark"
+									   Width="10"
+									   Height="10"
+									   HorizontalAlignment="Center"
+									   VerticalAlignment="Center"
+									   Fill="{DynamicResource HighlightBrush}"
+									   Stretch="Uniform" />
+						</Panel>
+					</Border>
+					<ContentPresenter Name="PART_ContentPresenter"
+									  Grid.Column="1"
+									  Margin="{TemplateBinding Padding}"
+									  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+									  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+									  Content="{TemplateBinding Content}"
+									  ContentTemplate="{TemplateBinding ContentTemplate}"
+									  IsVisible="{TemplateBinding Content,
+                                                        Converter={x:Static ObjectConverters.IsNotNull}}"
+									  RecognizesAccessKey="True"
+									  TextElement.Foreground="{TemplateBinding Foreground}" />
+				</Grid>
+			</ControlTemplate>
 		</Setter>
+	</Style>
+	<Style Selector="CheckBox:checked /template/ Path#checkMark">
+		<Setter Property="Fill" Value="White"/>
+		<Setter Property="IsVisible" Value="True" />
 	</Style>
 </Styles>

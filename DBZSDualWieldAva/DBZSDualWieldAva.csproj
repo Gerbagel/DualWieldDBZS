@@ -4,6 +4,7 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
 	<UseWindowsForms>true</UseWindowsForms>
+	<UseWPF>true</UseWPF>
   </PropertyGroup>
 
   
@@ -13,7 +14,20 @@
 
   
   <ItemGroup>
+    <AvaloniaResource Remove="Assets\click.ogg" />
+    <AvaloniaResource Remove="Assets\click.wav" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
     <AvaloniaXaml Remove="Assets\Styles.axaml" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <Content Include="Assets\click.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

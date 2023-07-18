@@ -1,12 +1,9 @@
 ﻿
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 using ReactiveUI;
 using System;
-using System.Diagnostics;
 using System.Reactive;
-using System.Windows.Input;
-using System.Xml.Linq;
+using System.Windows.Media;
 
 namespace DBZSDualWieldAva.ViewModels
 {
@@ -23,6 +20,17 @@ namespace DBZSDualWieldAva.ViewModels
                 UserSettings.Instance.CancelKeys = value;
             }
         }
+        public bool IsMuted
+        {
+            get
+            {
+                return UserSettings.Instance.IsMuted;
+            }
+            set
+            {
+                UserSettings.Instance.IsMuted = value;
+            }
+        }
         public ReactiveCommand<Window, Unit> SaveAndExitCommand { get; private set; }
 
         public SettingsViewModel() 
@@ -32,9 +40,20 @@ namespace DBZSDualWieldAva.ViewModels
 
         public void SaveAndExit(Window window)
         {
+            playClickSound();
             UserSettings.Instance.SaveSettings();
             if (window != null)
                 window.Close();
+        }
+
+        void playClickSound()
+        {
+            if (UserSettings.Instance.IsMuted)
+                return;
+            var player = new MediaPlayer();
+            player.Open(new Uri(AppDomain.CurrentDomain.BaseDirectory + @"Assets\click.wav"));
+            player.Volume = 0.3f;
+            player.Play();
         }
     }
 }

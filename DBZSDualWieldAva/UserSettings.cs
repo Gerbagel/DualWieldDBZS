@@ -14,6 +14,8 @@ namespace DBZSDualWieldAva
     {
         public string CancelKeys { get; set; } = "";
         public int ClickInterval { get; set; } = 0;
+
+        public bool IsMuted { get; set; } = false;
     }
     public class UserSettings
     {
@@ -70,6 +72,19 @@ namespace DBZSDualWieldAva
             set { settings.CancelKeys = value; }
         }
 
+        public bool IsMuted
+        {
+            get
+            {
+                if (!IsLoaded)
+                {
+                    LoadSettings();
+                }
+                return settings.IsMuted;
+            }
+            set{ settings.IsMuted = value; }
+        }
+
         public void SaveSettings()
         {
             if (File.Exists(ConfigFilePath))
@@ -97,6 +112,7 @@ namespace DBZSDualWieldAva
 
                     Interval = sStruct!.ClickInterval;
                     CancelKeys = sStruct!.CancelKeys;
+                    IsMuted = sStruct!.IsMuted;
                     IsLoaded = true;
                 }
                 catch (Exception ex)
@@ -110,6 +126,7 @@ namespace DBZSDualWieldAva
             {
                 Interval = 170;
                 CancelKeys = "E, Escape, V, L, K, X";
+                IsMuted = false;
                 SaveSettings();
             }
         }
