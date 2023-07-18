@@ -9,6 +9,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <UseWindowsForms>True</UseWindowsForms>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
+	<Title>Dual Wield DBZS</Title>
+	<Authors>Gerbagel</Authors>
+	<Description>A dual-wielding program for the DBZS Minecraft server.</Description>
+	<RepositoryUrl>https://github.com/Gerbagel/DualWieldDBZS</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
