@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <UseWindowsForms>True</UseWindowsForms>
+	<PublishAot>true</PublishAot>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
 	<Title>Dual Wield DBZS</Title>
 	<Authors>Gerbagel</Authors>
