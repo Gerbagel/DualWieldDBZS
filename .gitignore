@@ -447,6 +447,7 @@ $RECYCLE.BIN/
 ##
 ## Visual Studio Code
 ##
+.vscode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -454,3 +455,9 @@ $RECYCLE.BIN/
 !.vscode/extensions.json
 /DBZSDualWieldAva/Assets/avalonia-logo.ico
 /DualWieldDBZS_WinInstaller.exe
+
+
+##
+## Personal additions
+##
+*/UserConfig.json
