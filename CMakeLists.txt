@@ -33,6 +33,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         assets/background.png assets/bgbtn.png assets/click.wav assets/favicon.ico assets/settings_icon.png
         scaledbgwidget.h
         scaledbgwidget.cpp
+        clickclass.h clickclass.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET DualWieldDBZS APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include "clickclass.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -19,5 +21,6 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    ClickClass* m_pClickClass;
 };
 #endif // MAINWINDOW_H

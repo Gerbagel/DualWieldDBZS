@@ -16,16 +16,12 @@ protected:
 
         pixmap = pixmap.scaled(32, 32);
 
-        qDebug() << pixmap.width() << " | "
-                 << pixmap.height() << "\n";
-
         // Tile the pixmap across the widget
         for (int x = 0; x < width(); x += pixmap.width())
         {
             for (int y = 0; y < height(); y += pixmap.height())
             {
                 painter.drawPixmap(x, y, pixmap);
-                qDebug() << y << "\n";
             }
         }
     }

@@ -8,9 +8,12 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowFlags(Qt::Window | Qt::MSWindowsFixedSizeDialogHint);
     this->setFixedSize(250, 210);
     ui->setupUi(this);
+
+    m_pClickClass = new ClickClass((u_int*) this->winId());
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete m_pClickClass;
 }
