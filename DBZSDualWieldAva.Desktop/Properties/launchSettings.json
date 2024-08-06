@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "DBZSDualWieldAva.Desktop": {
-      "commandName": "Project",
-      "commandLineArgs": "-windows"
-    }
-  }
-}
