@@ -31,19 +31,29 @@
   <property name="windowTitle">
    <string>Dual Wield DBZS</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>250</width>
-     <height>21</height>
-    </rect>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/icons/assets/favicon.ico</normaloff>:/icons/assets/favicon.ico</iconset>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
+  <widget class="ScaledBgWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">font: 500 9pt &quot;Minecraft&quot;;</string>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <customwidgets>
+  <customwidget>
+   <class>ScaledBgWidget</class>
+   <extends>QWidget</extends>
+   <header>scaledbgwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

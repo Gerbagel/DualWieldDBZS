@@ -22,10 +22,17 @@ set(PROJECT_SOURCES
         ${TS_FILES}
 )
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(DualWieldDBZS
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+
+        resources.qrc
+        assets/background.png assets/bgbtn.png assets/click.wav assets/favicon.ico assets/settings_icon.png
+        scaledbgwidget.h
+        scaledbgwidget.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET DualWieldDBZS APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
