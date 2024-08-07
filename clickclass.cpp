@@ -1,6 +1,8 @@
 #include "clickclass.h"
 
 #include <qDebug>
+#include <QWidget>
+#include <QCursor>
 
 enum mouseeventflags
 {
@@ -72,6 +74,12 @@ ClickClass::ClickClass(u_int* handle) : windowHandle((HWND) handle)
 
     // initiate key map // todo: add JSON settings
     keyMap.insert(Qt::Key_E, false);
+    keyMap.insert(Qt::Key_Escape, false);
+    keyMap.insert(Qt::Key_V, false);
+    keyMap.insert(Qt::Key_L, false);
+    keyMap.insert(Qt::Key_K, false);
+    keyMap.insert(Qt::Key_X, false);
+    keyMap.insert(Qt::Key_T, false);
 
     foreach (Qt::Key key, keyMap.keys())
     {
@@ -89,6 +97,12 @@ ClickClass::ClickClass(u_int* handle) : windowHandle((HWND) handle)
     {
         qDebug() << "Failed to hook keyboard\n";
     }
+
+    worker = new ClickWorker(this);
+
+    connect(this, &ClickClass::stopThread, worker, &ClickWorker::stopThreadPeacefully);
+
+    worker->start();
 }
 
 ClickClass::~ClickClass()
@@ -157,10 +171,87 @@ void ClickClass::populateMap()
 
 void ClickClass::onToggle()
 {
+    clickerOn = !clickerOn;
 
+    if (!clickerOn)
+    {
+        emit stopThread();
+    }
+    else if (worker->isFinished())
+    {
+        worker->quit();
+        worker->wait();
+        worker->start();
+    }
 }
 
 void ClickClass::onBean()
 {
+    INPUT inputs[2] = {};
+    inputs[0].type = INPUT_KEYBOARD;
+    inputs[0].ki.wVk = '9';
 
+    inputs[1].type = INPUT_KEYBOARD;
+    inputs[1].ki.wVk = '9';
+    inputs[1].ki.dwFlags = KEYEVENTF_KEYUP;
+
+    SendInput(ARRAYSIZE(inputs), inputs, sizeof(INPUT));
+
+    QPoint point = QCursor::pos();
+    rightClick(point.x(), point.y());
+}
+
+ClickWorker::ClickWorker(ClickClass* parent) : parent(parent)
+{}
+
+void ClickWorker::run()
+{
+    bool send1 = true;
+    emit changeButtonText("Stop (Ctrl+Tab)");
+    while (!stopThread)
+    {
+        foreach (Qt::Key key, keyMap.keys())
+        {
+            if (keyMap.value(key))
+            {
+                parent->onToggle();
+                keyMap.insert(key, false);
+            }
+        }
+
+        INPUT inputs[2] = {};
+        if (send1)
+        {
+            inputs[0].type = INPUT_KEYBOARD;
+            inputs[0].ki.wVk = '1';
+
+            inputs[1].type = INPUT_KEYBOARD;
+            inputs[1].ki.wVk = '1';
+            inputs[1].ki.dwFlags = KEYEVENTF_KEYUP;
+        }
+        else
+        {
+            inputs[0].type = INPUT_KEYBOARD;
+            inputs[0].ki.wVk = '2';
+
+            inputs[1].type = INPUT_KEYBOARD;
+            inputs[1].ki.wVk = '2';
+            inputs[1].ki.dwFlags = KEYEVENTF_KEYUP;
+        }
+
+        SendInput(ARRAYSIZE(inputs), inputs, sizeof(INPUT));
+        send1 = !send1;
+
+        QPoint point = QCursor::pos();
+        leftClick(point.x(), point.y());
+        QThread::msleep(170);   // todo json settings
+    }
+
+    emit changeButtonText("Start (Ctrl+Tab)");
+    stopThread = false;
+}
+
+void ClickWorker::stopThreadPeacefully()
+{
+    stopThread = !stopThread;
 }
