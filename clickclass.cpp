@@ -1,4 +1,5 @@
 #include "clickclass.h"
+#include "usersettings.h"
 
 #include <qDebug>
 #include <QWidget>
@@ -73,17 +74,9 @@ ClickClass::ClickClass(u_int* handle) : windowHandle((HWND) handle)
     }
 
     // initiate key map // todo: add JSON settings
-    keyMap.insert(Qt::Key_E, false);
-    keyMap.insert(Qt::Key_Escape, false);
-    keyMap.insert(Qt::Key_V, false);
-    keyMap.insert(Qt::Key_L, false);
-    keyMap.insert(Qt::Key_K, false);
-    keyMap.insert(Qt::Key_X, false);
-    keyMap.insert(Qt::Key_T, false);
-
-    foreach (Qt::Key key, keyMap.keys())
+    foreach (Qt::Key key, UserSettings::instance()->getKeyList())
     {
-        qDebug() << key << " | " << keyMap[key] << "\n";
+        keyMap.insert(key, false);
     }
 
     // hook keyboard
@@ -244,7 +237,7 @@ void ClickWorker::run()
 
         QPoint point = QCursor::pos();
         leftClick(point.x(), point.y());
-        QThread::msleep(170);   // todo json settings
+        QThread::msleep(UserSettings::instance()->getInterval());   // todo json settings
     }
 
     emit changeButtonText("Start (Ctrl+Tab)");

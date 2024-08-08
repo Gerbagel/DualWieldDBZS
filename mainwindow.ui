@@ -40,7 +40,7 @@
   </property>
   <widget class="ScaledBgWidget" name="centralwidget">
    <property name="styleSheet">
-    <string notr="true">font: 500 9pt &quot;Minecraft&quot;;</string>
+    <string notr="true">font: 500 12pt &quot;Minecraft&quot;;</string>
    </property>
    <widget class="QPushButton" name="toggleButton">
     <property name="geometry">
@@ -54,7 +54,7 @@
     <property name="font">
      <font>
       <family>Minecraft</family>
-      <pointsize>9</pointsize>
+      <pointsize>12</pointsize>
       <italic>false</italic>
       <fontweight>Medium</fontweight>
      </font>
@@ -69,16 +69,16 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>95</x>
-      <y>135</y>
-      <width>60</width>
+      <x>80</x>
+      <y>130</y>
+      <width>80</width>
       <height>20</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Minecraft</family>
-      <pointsize>9</pointsize>
+      <pointsize>12</pointsize>
       <italic>false</italic>
       <fontweight>Medium</fontweight>
      </font>
@@ -102,6 +102,57 @@ background-image: url(:/images/assets/bgbtn.png);</string>
     </property>
     <property name="text">
      <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>151</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Interval (ms):</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="intervalSpinBox">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>40</y>
+      <width>61</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: black;
+border-style: outset;
+border-width: 1px;
+border-color: rgb(255, 255, 255);
+border-radius: 0px;</string>
+    </property>
+    <property name="frame">
+     <bool>false</bool>
+    </property>
+    <property name="buttonSymbols">
+     <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+    </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>1000</number>
+    </property>
+    <property name="value">
+     <number>170</number>
     </property>
    </widget>
   </widget>

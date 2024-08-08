@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
+#include "usersettings.h"
+
 MainWindow::MainWindow(HotkeyEventFilter* eventFilter, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -26,6 +28,13 @@ MainWindow::MainWindow(HotkeyEventFilter* eventFilter, QWidget *parent)
     {
         m_pClickClass->onToggle();
     });
+
+    connect(ui->intervalSpinBox, &QSpinBox::valueChanged, this, [ui = ui]()
+    {
+        UserSettings::instance()->setInterval((float) ui->intervalSpinBox->value());
+    });
+
+    ui->intervalSpinBox->setValue(UserSettings::instance()->getInterval());
 
     // todo settings button and menu
 }
