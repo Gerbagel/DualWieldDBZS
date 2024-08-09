@@ -43,6 +43,10 @@ public:
     void setInterval(float interval);
     float getInterval();
 
+    void setMuted(bool muted);
+    bool getMuted();
+
+    void setKeyList(QList<Qt::Key> keyList);
     QList<Qt::Key> getKeyList();
 };
 

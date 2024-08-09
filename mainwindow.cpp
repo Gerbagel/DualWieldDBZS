@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 
 #include "usersettings.h"
+#include "settingsdialog.h"
 
 MainWindow::MainWindow(HotkeyEventFilter* eventFilter, QWidget *parent)
     : QMainWindow(parent)
@@ -27,6 +28,12 @@ MainWindow::MainWindow(HotkeyEventFilter* eventFilter, QWidget *parent)
     connect(ui->toggleButton, &QPushButton::clicked, this, [m_pClickClass = m_pClickClass]()
     {
         m_pClickClass->onToggle();
+    });
+
+    connect(ui->settingsButton, &QPushButton::clicked, this, [this]()
+    {
+        SettingsDialog* dialog = new SettingsDialog(this);
+        dialog->show();
     });
 
     connect(ui->intervalSpinBox, &QSpinBox::valueChanged, this, [ui = ui]()

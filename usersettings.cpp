@@ -94,6 +94,21 @@ float UserSettings::getInterval()
     return settings->intervalMs;
 }
 
+void UserSettings::setMuted(bool muted)
+{
+    settings->muted = muted;
+}
+
+bool UserSettings::getMuted()
+{
+    return settings->muted;
+}
+
+void UserSettings::setKeyList(QList<Qt::Key> keyList)
+{
+    settings->keyList = keyList;
+}
+
 QList<Qt::Key> UserSettings::getKeyList()
 {
     return settings->keyList;
