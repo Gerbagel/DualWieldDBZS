@@ -1,0 +1,14 @@
+<RCC>
+    <qresource lang="en" prefix="/images">
+        <file>assets/background.png</file>
+        <file>assets/bgbtn.png</file>
+        <file>assets/settings_icon.png</file>
+        <file>assets/checkmark.png</file>
+    </qresource>
+    <qresource lang="en" prefix="/icons">
+        <file>assets/favicon.ico</file>
+    </qresource>
+    <qresource lang="en" prefix="/sounds">
+        <file>assets/click.wav</file>
+    </qresource>
+</RCC>
