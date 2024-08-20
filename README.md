@@ -14,6 +14,6 @@ To build, open the project in Qt Creator and build the Release profile.
 
 Then run the `build.bat` file in the root directory. It will create a `release` folder where all necessary binaries are included.
 
-Installer to be implemented at a later time.
+Running the `BuildInstaller.nsi` script will create an installer file named `DualWieldDBZS_WinInstaller.exe`.
 
-This assumes the recommended build environment is being used. If anything else is used, the build script will need to be adapted.
+This assumes the recommended build environment is being used. If anything else is used, the build and installer scripts will need to be adapted.

@@ -22,6 +22,8 @@ set(PROJECT_SOURCES
         ${TS_FILES}
 )
 
+set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/appicon.rc")
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -30,7 +32,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
 
         resources.qrc
-        assets/background.png assets/bgbtn.png assets/click.wav assets/favicon.ico assets/settings_icon.png
+        assets/background.png assets/bgbtn.png assets/click.wav assets/favicon.ico assets/settings_icon.png assets/checkmark.png
         scaledbgwidget.h
         scaledbgwidget.cpp
         clickclass.h clickclass.cpp
@@ -39,10 +41,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         usersettings.h
         usersettings.cpp
         settingsdialog.h settingsdialog.cpp settingsdialog.ui
-        assets/checkmark.png
-
-
-
+        ${app_icon_resource_windows}
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET DualWieldDBZS APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
