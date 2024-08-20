@@ -40,14 +40,12 @@ private:
     HWND windowHandle;
     float clickDelay = 170; // milliseconds
 
-    bool clickerOn = false;
-
 public:
     ClickClass(u_int* handle);
     ~ClickClass();
 
     ClickWorker* worker;
-
+    bool clickerOn = false;
 
 signals:
     void stopThread();

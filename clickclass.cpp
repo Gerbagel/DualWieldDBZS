@@ -194,6 +194,19 @@ void ClickClass::onBean()
     rightClick(point.x(), point.y());
 }
 
+bool checkForCancelKey()
+{
+    foreach (Qt::Key key, keyMap.keys())
+    {
+        if (keyMap.value(key))
+        {
+            keyMap.insert(key, false);
+            return true;
+        }
+    }
+    return false;
+}
+
 ClickWorker::ClickWorker(ClickClass* parent) : parent(parent)
 {}
 
@@ -201,15 +214,15 @@ void ClickWorker::run()
 {
     bool send1 = true;
     emit changeButtonText("Stop (Ctrl+Tab)");
+
+    qDebug() << "fucka me " << stopThread;
+
     while (!stopThread)
     {
-        foreach (Qt::Key key, keyMap.keys())
+        if (checkForCancelKey())
         {
-            if (keyMap.value(key))
-            {
-                parent->onToggle();
-                keyMap.insert(key, false);
-            }
+            parent->clickerOn = false;
+            break;
         }
 
         INPUT inputs[2] = {};
@@ -246,5 +259,5 @@ void ClickWorker::run()
 
 void ClickWorker::stopThreadPeacefully()
 {
-    stopThread = !stopThread;
+    stopThread = true;
 }
