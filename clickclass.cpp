@@ -237,7 +237,7 @@ void ClickWorker::run()
 
         QPoint point = QCursor::pos();
         leftClick(point.x(), point.y());
-        QThread::msleep(UserSettings::instance()->getInterval());   // todo json settings
+        QThread::msleep(UserSettings::instance()->getInterval());
     }
 
     emit changeButtonText("Start (Ctrl+Tab)");
