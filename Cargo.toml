@@ -1,0 +1,12 @@
+[package]
+name = "DualWieldDBZS"
+version = "5.0.0"
+edition = "2024"
+
+[target.x86_64-pc-windows-gnu]
+linker = "x86_64-w64-mingw32-gcc"
+
+[dependencies]
+eframe = "0.36"
+egui_taffy = "0.14.0"
+enigo = "0.2"
