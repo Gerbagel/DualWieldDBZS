@@ -8,7 +8,7 @@ use window::*;
 fn main() -> eframe::Result<()>
 {
     let options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default().with_inner_size([250.0, 150.0]),
+        viewport: egui::ViewportBuilder::default().with_inner_size([300.0, 210.0]).with_resizable(false),
         ..Default::default()
     };
 
