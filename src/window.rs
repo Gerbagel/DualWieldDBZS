@@ -10,7 +10,7 @@ use eframe::egui;
 use egui_taffy::{taffy, tui, TuiBuilderLogic};
 use enigo::{Enigo, Settings};
 use hotkey::HotkeyController;
-use settings::SettingsWindow;
+use settings::{AppSettings, SettingsWindow};
 use std::num::NonZeroUsize;
 use std::sync::{
     atomic::{AtomicBool, AtomicU64, Ordering},
@@ -32,15 +32,20 @@ impl DualWieldDBZSApp
 {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self
     {
-        let ms = 50;
+        let loaded_settings = AppSettings::load();
+        let ms = loaded_settings.interval_ms;
         let ms_interval = Arc::new(AtomicU64::new(ms));
         let worker_ms = ms_interval.clone();
 
         let is_clicking = Arc::new(AtomicBool::new(false));
         let worker_flag = is_clicking.clone();
 
-        let hotkey = HotkeyController::new(is_clicking.clone(), cc.egui_ctx.clone());
-        let settings = SettingsWindow::new();
+        let hotkey = HotkeyController::new(
+            is_clicking.clone(),
+            cc.egui_ctx.clone(),
+            &loaded_settings.hotkey,
+        );
+        let settings = SettingsWindow::new(loaded_settings);
 
         // style start
         let mut visuals = egui::Visuals::dark();
@@ -91,7 +96,12 @@ impl eframe::App for DualWieldDBZSApp
 {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame)
     {
-        ui.input(|input| self.hotkey.process_input(input));
+        ui.input(|input| {
+            if self.hotkey.process_input(input)
+            {
+                self.settings.update_hotkey(self.hotkey.hotkey_string());
+            }
+        });
 
         // render the settings window if toggled open
         self.settings.show(ui.ctx(), &mut self.hotkey);
@@ -123,6 +133,7 @@ impl eframe::App for DualWieldDBZSApp
                         if slider.changed()
                         {
                             self.ms_interval.store(self.ms, Ordering::Relaxed);
+                            self.settings.update_interval(self.ms);
                         }
 
                         ui.add_space(8.0);
@@ -137,7 +148,7 @@ impl eframe::App for DualWieldDBZSApp
                             {
                                 self.settings.toggle();
                             }
-                        });
+                        }); // horizontal ui
                     }); // ui
                 }); // show
         }); // CentralPanel

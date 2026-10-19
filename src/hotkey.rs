@@ -19,24 +19,26 @@ pub struct HotkeyController
 
 impl HotkeyController
 {
-    pub fn new(is_clicking: Arc<AtomicBool>, egui_ctx: egui::Context) -> Self
+    pub fn new(is_clicking: Arc<AtomicBool>, egui_ctx: egui::Context, initial_hotkey: &str)
+        -> Self
     {
-        // Default hotkey: Ctrl + Tab
-        let default_hotkey = HotKey::new(Some(Modifiers::CONTROL), Code::Tab);
-        let current_id = Arc::new(AtomicU32::new(default_hotkey.id()));
-        let display_name = format_hotkey(&default_hotkey);
+        let hotkey = initial_hotkey
+            .parse::<HotKey>()
+            .unwrap_or_else(|_| HotKey::new(Some(Modifiers::CONTROL), Code::Tab));
+
+        let current_id = Arc::new(AtomicU32::new(hotkey.id()));
+        let display_name = format_hotkey(&hotkey);
 
         let manager = GlobalHotKeyManager::new().ok();
         if let Some(ref m) = manager
         {
-            let _ = m.register(default_hotkey);
+            let _ = m.register(hotkey);
         }
 
         let is_clicking_handler = is_clicking;
         let id_handler = current_id.clone();
         GlobalHotKeyEvent::set_event_handler(Some(move |event: GlobalHotKeyEvent| {
-            if event.state == HotKeyState::Pressed
-                && event.id == id_handler.load(Ordering::Relaxed)
+            if event.state == HotKeyState::Pressed && event.id == id_handler.load(Ordering::Relaxed)
             {
                 let active = is_clicking_handler.load(Ordering::Relaxed);
                 is_clicking_handler.store(!active, Ordering::Relaxed);
@@ -44,10 +46,9 @@ impl HotkeyController
             }
         }));
 
-        Self
-        {
+        Self {
             manager,
-            current_hotkey: default_hotkey,
+            current_hotkey: hotkey,
             current_id,
             display_name,
             is_recording: false,
@@ -57,6 +58,11 @@ impl HotkeyController
     pub fn display_name(&self) -> &str
     {
         &self.display_name
+    }
+
+    pub fn hotkey_string(&self) -> String
+    {
+        self.current_hotkey.to_string()
     }
 
     pub fn is_recording(&self) -> bool
@@ -69,17 +75,17 @@ impl HotkeyController
         self.is_recording = !self.is_recording;
     }
 
-    pub fn process_input(&mut self, input: &egui::InputState)
+    pub fn process_input(&mut self, input: &egui::InputState) -> bool
     {
         if !self.is_recording
         {
-            return;
+            return false;
         }
 
         if input.key_pressed(egui::Key::Escape)
         {
             self.is_recording = false;
-            return;
+            return false;
         }
 
         for event in &input.events
@@ -111,10 +117,8 @@ impl HotkeyController
                         mods |= Modifiers::META;
                     }
 
-                    let new_hotkey = HotKey::new(
-                        if mods.is_empty() { None } else { Some(mods) },
-                        code,
-                    );
+                    let new_hotkey =
+                        HotKey::new(if mods.is_empty() { None } else { Some(mods) }, code);
 
                     if let Some(ref manager) = self.manager
                     {
@@ -124,13 +128,16 @@ impl HotkeyController
                             self.current_hotkey = new_hotkey;
                             self.current_id.store(new_hotkey.id(), Ordering::Relaxed);
                             self.display_name = format_hotkey(&new_hotkey);
+                            self.is_recording = false;
+                            return true;
                         }
                     }
                     self.is_recording = false;
-                    break;
+                    return false;
                 }
             }
         }
+        false
     }
 }
 
