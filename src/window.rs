@@ -1,10 +1,16 @@
 #[path = "click.rs"]
 mod click;
+#[path = "hotkey.rs"]
+mod hotkey;
+#[path = "settings.rs"]
+mod settings;
 
 use click::do_click;
 use eframe::egui;
 use egui_taffy::{taffy, tui, TuiBuilderLogic};
 use enigo::{Enigo, Settings};
+use hotkey::HotkeyController;
+use settings::SettingsWindow;
 use std::num::NonZeroUsize;
 use std::sync::{
     atomic::{AtomicBool, AtomicU64, Ordering},
@@ -18,6 +24,8 @@ pub struct DualWieldDBZSApp
     ms: u64,
     ms_interval: Arc<AtomicU64>,
     is_clicking: Arc<AtomicBool>,
+    hotkey: HotkeyController,
+    settings: SettingsWindow,
 }
 
 impl DualWieldDBZSApp
@@ -30,6 +38,9 @@ impl DualWieldDBZSApp
 
         let is_clicking = Arc::new(AtomicBool::new(false));
         let worker_flag = is_clicking.clone();
+
+        let hotkey = HotkeyController::new(is_clicking.clone(), cc.egui_ctx.clone());
+        let settings = SettingsWindow::new();
 
         // style start
         let mut visuals = egui::Visuals::dark();
@@ -64,12 +75,14 @@ impl DualWieldDBZSApp
                     thread::sleep(Duration::from_millis(50));
                 }
             }
-        });
+        }); // thread
 
         Self {
             ms,
             ms_interval,
             is_clicking,
+            hotkey,
+            settings,
         }
     }
 }
@@ -78,6 +91,11 @@ impl eframe::App for DualWieldDBZSApp
 {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame)
     {
+        ui.input(|input| self.hotkey.process_input(input));
+
+        // render the settings window if toggled open
+        self.settings.show(ui.ctx(), &mut self.hotkey);
+
         egui::CentralPanel::default().show(ui, |ui| {
             tui(ui, "main_panel")
                 .reserve_available_space()
@@ -91,11 +109,11 @@ impl eframe::App for DualWieldDBZSApp
                     let active = self.is_clicking.load(Ordering::Relaxed);
                     let button_text = if active
                     {
-                        "Stop (Ctrl + Tab)"
+                        format!("Stop ({})", self.hotkey.display_name())
                     }
                     else
                     {
-                        "Start (Ctrl + Tab)"
+                        format!("Start ({})", self.hotkey.display_name())
                     };
 
                     tui.ui(|ui| {
@@ -107,10 +125,19 @@ impl eframe::App for DualWieldDBZSApp
                             self.ms_interval.store(self.ms, Ordering::Relaxed);
                         }
 
-                        if ui.button(button_text).clicked()
-                        {
-                            self.is_clicking.store(!active, Ordering::Relaxed);
-                        }
+                        ui.add_space(8.0);
+
+                        ui.horizontal(|ui| {
+                            if ui.button(button_text).clicked()
+                            {
+                                self.is_clicking.store(!active, Ordering::Relaxed);
+                            }
+
+                            if ui.button("⚙").clicked()
+                            {
+                                self.settings.toggle();
+                            }
+                        });
                     }); // ui
                 }); // show
         }); // CentralPanel
