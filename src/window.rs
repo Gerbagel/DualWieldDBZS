@@ -7,18 +7,27 @@ use egui_taffy::{taffy, tui, TuiBuilderLogic};
 use enigo::{Enigo, Settings};
 use std::num::NonZeroUsize;
 use std::sync::{
-    atomic::{AtomicBool, Ordering},
+    atomic::{AtomicBool, AtomicU64, Ordering},
     Arc,
 };
 use std::thread;
 use std::time::Duration;
 
-pub struct AutoClickerApp {
+pub struct DualWieldDBZSApp
+{
+    ms: u64,
+    ms_interval: Arc<AtomicU64>,
     is_clicking: Arc<AtomicBool>,
 }
 
-impl AutoClickerApp {
-    pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
+impl DualWieldDBZSApp
+{
+    pub fn new(cc: &eframe::CreationContext<'_>) -> Self
+    {
+        let ms = 50;
+        let ms_interval = Arc::new(AtomicU64::new(ms));
+        let worker_ms = ms_interval.clone();
+
         let is_clicking = Arc::new(AtomicBool::new(false));
         let worker_flag = is_clicking.clone();
 
@@ -31,11 +40,9 @@ impl AutoClickerApp {
         visuals.widgets.inactive.corner_radius = egui::CornerRadius::ZERO;
         cc.egui_ctx.set_visuals(visuals);
 
-        // Required by egui_taffy: prevent text from collapsing into single-character vertical columns
         cc.egui_ctx.all_styles_mut(|style| {
             style.wrap_mode = Some(egui::TextWrapMode::Extend);
         });
-        // Enable egui multi-pass so taffy can accurately calculate intrinsic sizes
         cc.egui_ctx.options_mut(|options| {
             options.max_passes = NonZeroUsize::new(2).unwrap();
         });
@@ -44,22 +51,33 @@ impl AutoClickerApp {
         thread::spawn(move || {
             let mut enigo = Enigo::new(&Settings::default()).unwrap();
 
-            loop {
-                if worker_flag.load(Ordering::Relaxed) {
+            loop
+            {
+                let interval = worker_ms.load(Ordering::Relaxed);
+                if worker_flag.load(Ordering::Relaxed)
+                {
                     do_click(&mut enigo);
-                    thread::sleep(Duration::from_millis(50));
-                } else {
+                    thread::sleep(Duration::from_millis(interval));
+                }
+                else
+                {
                     thread::sleep(Duration::from_millis(50));
                 }
             }
         });
 
-        Self { is_clicking }
+        Self {
+            ms,
+            ms_interval,
+            is_clicking,
+        }
     }
 }
 
-impl eframe::App for AutoClickerApp {
-    fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
+impl eframe::App for DualWieldDBZSApp
+{
+    fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame)
+    {
         egui::CentralPanel::default().show(ui, |ui| {
             tui(ui, "main_panel")
                 .reserve_available_space()
@@ -71,18 +89,30 @@ impl eframe::App for AutoClickerApp {
                 })
                 .show(|tui| {
                     let active = self.is_clicking.load(Ordering::Relaxed);
-                    let button_text = if active {
+                    let button_text = if active
+                    {
                         "Stop (Ctrl + Tab)"
-                    } else {
+                    }
+                    else
+                    {
                         "Start (Ctrl + Tab)"
                     };
 
                     tui.ui(|ui| {
-                        if ui.button(button_text).clicked() {
+                        let slider = ui.add(
+                            egui::Slider::new(&mut self.ms, 1..=1000).text("Click interval (ms)"),
+                        );
+                        if slider.changed()
+                        {
+                            self.ms_interval.store(self.ms, Ordering::Relaxed);
+                        }
+
+                        if ui.button(button_text).clicked()
+                        {
                             self.is_clicking.store(!active, Ordering::Relaxed);
                         }
-                    });
-                });
-        });
+                    }); // ui
+                }); // show
+        }); // CentralPanel
     }
 }
