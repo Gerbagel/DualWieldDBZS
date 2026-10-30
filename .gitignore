@@ -1,2 +1,3 @@
-build/
-release/
+/target
+DualWieldDBZS-release-linux.tar.gz
+DualWieldDBZS-release-windows.zip
